@@ -16,9 +16,28 @@ exports.getLikes = exports.getComments = exports.addLike = exports.addComment = 
 const BlogModel_1 = __importDefault(require("../models/BlogModel"));
 const CommentModel_1 = __importDefault(require("../models/CommentModel"));
 const LikeModel_1 = __importDefault(require("../models/LikeModel"));
+const multer_1 = __importDefault(require("multer"));
+// Multer configuration for file uploads
+const storage = multer_1.default.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Keep the original file name
+    }
+});
+const upload = (0, multer_1.default)({ storage: storage });
 const createBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { title, image, content } = req.body;
+        const { title, content } = req.body;
+        let image;
+        if (req.file) {
+            image = req.file.path;
+        }
+        else {
+            // Handle case where no file is uploaded
+            throw new Error("No image uploaded");
+        }
         const newBlog = yield BlogModel_1.default.create({
             title,
             image,
@@ -42,25 +61,37 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getAllBlogs = getAllBlogs;
 const getBlogById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { blogId } = req.params;
     try {
-        const blog = yield BlogModel_1.default.findById(id);
+        const blog = yield BlogModel_1.default.findById(blogId);
         if (!blog) {
-            res.status(404).json({ message: "Blog not found" });
-            return;
+            return res.status(404).json({ message: "Blog not found" });
         }
         res.json(blog);
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error retrieving blog:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 exports.getBlogById = getBlogById;
 const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { title, image, content } = req.body;
+    const { blogId } = req.params;
+    const { title, content } = req.body;
     try {
-        const updatedBlog = yield BlogModel_1.default.findByIdAndUpdate(id, { title, image, content }, { new: true });
+        let image;
+        if (req.file) {
+            image = req.file.path; // Use the path of the uploaded image file
+        }
+        else {
+            // If no file is uploaded, retain the existing image
+            const blog = yield BlogModel_1.default.findById(blogId);
+            if (!blog) {
+                return res.status(404).json({ message: "Blog not found" });
+            }
+            image = blog.image;
+        }
+        const updatedBlog = yield BlogModel_1.default.findByIdAndUpdate(blogId, { title, image, content }, { new: true });
         if (!updatedBlog) {
             res.status(404).json({ message: "Blog not found" });
             return;
@@ -73,9 +104,9 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateBlog = updateBlog;
 const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { blogId } = req.params;
     try {
-        const deletedBlog = yield BlogModel_1.default.findByIdAndDelete(id);
+        const deletedBlog = yield BlogModel_1.default.findByIdAndDelete(blogId);
         if (!deletedBlog) {
             res.status(404).json({ message: "Blog not found" });
             return;
@@ -88,18 +119,25 @@ const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.deleteBlog = deleteBlog;
 const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { blogId } = req.params;
-    const { content } = req.body;
     try {
+        const { blogId } = req.params;
+        const { comment } = req.body;
+        console.log("Received comment data:", comment);
+        // Validate if comment is provided
+        if (!comment) {
+            return res.status(400).json({ message: "Comment is required for adding a comment" });
+        }
         const blog = yield BlogModel_1.default.findById(blogId);
         if (!blog) {
             return res.status(404).json({ message: "Blog post not found" });
         }
-        const comment = new CommentModel_1.default({ content, blog: blogId });
-        yield comment.save();
-        blog.comments.push(comment);
+        console.log("Found blog:", blog);
+        const newComment = new CommentModel_1.default({ content: comment, blog: blogId });
+        yield newComment.save();
+        blog.comments.push(newComment);
         yield blog.save();
-        res.status(201).json(comment);
+        console.log("Comment added:", newComment);
+        res.status(201).json(newComment);
     }
     catch (error) {
         console.error("Error adding comment:", error);

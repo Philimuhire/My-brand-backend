@@ -2,10 +2,30 @@ import { Request, Response } from "express";
 import BlogModel from "../models/BlogModel";
 import CommentModel from "../models/CommentModel";
 import LikeModel from "../models/LikeModel";
+import multer from "multer";
+
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Keep the original file name
+  }
+});
+
+const upload = multer({ storage: storage });
 
 export const createBlog = async (req: Request, res: Response) => {
   try {
-    const { title, image, content } = req.body;
+    const { title, content } = req.body;
+    let image;
+    if (req.file) {
+      image = req.file.path;
+    } else {
+      // Handle case where no file is uploaded
+      throw new Error("No image uploaded");
+    }
     const newBlog = await BlogModel.create({
       title,
       image,
@@ -27,24 +47,42 @@ export const getAllBlogs = async (req: Request, res: Response) => {
 };
 
 export const getBlogById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { blogId } = req.params;
+
   try {
-    const blog = await BlogModel.findById(id);
+    const blog = await BlogModel.findById(blogId);
     if (!blog) {
-      res.status(404).json({ message: "Blog not found" });
-      return;
+      return res.status(404).json({ message: "Blog not found" });
     }
     res.json(blog);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    console.error("Error retrieving blog:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const updateBlog = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { title, image, content } = req.body;
+  const { blogId } = req.params;
+  const { title, content } = req.body;
+
   try {
-    const updatedBlog = await BlogModel.findByIdAndUpdate(id, { title, image, content }, { new: true });
+    let image;
+    if (req.file) {
+      image = req.file.path; // Use the path of the uploaded image file
+    } else {
+      // If no file is uploaded, retain the existing image
+      const blog = await BlogModel.findById(blogId);
+      if (!blog) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+      image = blog.image;
+    }
+
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      blogId,
+      { title, image, content },
+      { new: true }
+    );
     if (!updatedBlog) {
       res.status(404).json({ message: "Blog not found" });
       return;
@@ -56,9 +94,9 @@ export const updateBlog = async (req: Request, res: Response) => {
 };
 
 export const deleteBlog = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { blogId } = req.params;
   try {
-    const deletedBlog = await BlogModel.findByIdAndDelete(id);
+    const deletedBlog = await BlogModel.findByIdAndDelete(blogId);
     if (!deletedBlog) {
       res.status(404).json({ message: "Blog not found" });
       return;
@@ -70,21 +108,32 @@ export const deleteBlog = async (req: Request, res: Response) => {
 };
 
 export const addComment = async (req: Request, res: Response) => {
-  const { blogId } = req.params;
-  const { content } = req.body;
-
   try {
+    const { blogId } = req.params;
+    const { comment } = req.body;
+
+    console.log("Received comment data:", comment);
+
+    // Validate if comment is provided
+    if (!comment) {
+      return res.status(400).json({ message: "Comment is required for adding a comment" });
+    }
+
     const blog = await BlogModel.findById(blogId);
     if (!blog) {
       return res.status(404).json({ message: "Blog post not found" });
     }
 
-    const comment = new CommentModel({ content, blog: blogId });
-    await comment.save();
-    blog.comments.push(comment);
+    console.log("Found blog:", blog);
+
+    const newComment = new CommentModel({ content: comment, blog: blogId });
+    await newComment.save();
+    blog.comments.push(newComment);
     await blog.save();
 
-    res.status(201).json(comment);
+    console.log("Comment added:", newComment);
+
+    res.status(201).json(newComment);
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ message: "Internal server error" });

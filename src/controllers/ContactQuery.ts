@@ -19,3 +19,12 @@ export const getContactQueries = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getContactQueryCount = async (req: Request, res: Response) => {
+    try {
+      const queryCount = await ContactQuery.countDocuments();
+      res.json({ queryCount });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };

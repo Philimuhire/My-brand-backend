@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContactQueries = exports.saveContactQuery = void 0;
+exports.getContactQueryCount = exports.getContactQueries = exports.saveContactQuery = void 0;
 const ContactQueryModel_1 = __importDefault(require("../models/ContactQueryModel"));
 const saveContactQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -35,3 +35,13 @@ const getContactQueries = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getContactQueries = getContactQueries;
+const getContactQueryCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const queryCount = yield ContactQueryModel_1.default.countDocuments();
+        res.json({ queryCount });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+exports.getContactQueryCount = getContactQueryCount;
