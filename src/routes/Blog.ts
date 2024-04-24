@@ -1,21 +1,20 @@
 import express from "express";
-import multer from "multer"; // Import multer for file uploads
+import multer from "multer"; 
 import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, addComment, addLike, getComments, getLikes } from "../controllers/Blog";
 
 const router = express.Router();
 
-// Set up multer storage for file uploads
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+      cb(null, "uploads/"); 
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname); // Keep the original file name
+      cb(null, file.originalname); 
     }
   });
 
-  // Create multer instance with specified storage
-const upload = multer({ storage: storage });
+
+const upload = multer({ storage: storage });*/
 
 /**
  * @swagger
@@ -53,7 +52,7 @@ const upload = multer({ storage: storage });
  *       '500':
  *         description: Internal server error.
  */
-router.post("/createBlog", upload.single("image"), createBlog);
+router.post("/createBlog", createBlog);
 
 /**
  * Get all blogs.
@@ -132,7 +131,7 @@ router.get("/getBlogById/:blogId", getBlogById);
  *       '500':
  *         description: Internal server error.
  */
-router.put("/updateBlog/:blogId", upload.single("image"), updateBlog);
+router.put("/updateBlog/:blogId", updateBlog);
 
 /**
  * Delete a blog.

@@ -7,6 +7,8 @@ import ContactQueryRoute from "./routes/ContactQuery"
 import BlogModel from "./models/BlogModel";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger'; 
+import path from 'path';
+import upload from "./cloudinary/multer";
 
 
 const app = express()
@@ -17,8 +19,9 @@ mongoose.connect("mongodb+srv://Philimuhire:Phili123@philbertapi.ue2svev.mongodb
     console.log(error.message)
 })
 
-
+//app.use(express.static(path.join(__dirname, 'uploads/')))
 app.use(express.json())
+app.use(upload.single("image"));
 app.use(cors())
 app.use("/auth", UserRoute)
 app.use("/blog", BlogRoute)

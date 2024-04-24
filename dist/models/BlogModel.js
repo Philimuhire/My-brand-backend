@@ -33,7 +33,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname); // Keep the original file name
+        cb(null, file.originalname);
     }
 });
 const upload = (0, multer_1.default)({ storage: storage });

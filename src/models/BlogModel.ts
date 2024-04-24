@@ -4,7 +4,7 @@ import multer from "multer";
 
 interface BlogModel extends Document {
     title: string;
-    image: string; // Change this to accept file uploads
+    image: string; 
     content: string;
     comments: CommentModel[];
     likes: number;
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
         cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname); // Keep the original file name
+        cb(null, file.originalname); 
     }
 });
 

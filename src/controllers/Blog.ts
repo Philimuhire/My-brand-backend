@@ -3,9 +3,10 @@ import BlogModel from "../models/BlogModel";
 import CommentModel from "../models/CommentModel";
 import LikeModel from "../models/LikeModel";
 import multer from "multer";
+import uploader from "../cloudinary/cloudinary";
 
-// Multer configuration for file uploads
-const storage = multer.diskStorage({
+
+/*const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
   },
@@ -14,21 +15,20 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });*/
 
 export const createBlog = async (req: Request, res: Response) => {
   try {
     const { title, content } = req.body;
-    let image;
+    /*let image;
     if (req.file) {
-      image = req.file.path;
     } else {
-      // Handle case where no file is uploaded
       throw new Error("No image uploaded");
-    }
+    }*/
+    const result = await uploader(req.file, res);
     const newBlog = await BlogModel.create({
       title,
-      image,
+      image : result.secure_url,
       content,
     });
     res.status(201).json({ message: "Blog created successfully", blog: newBlog });
@@ -66,11 +66,11 @@ export const updateBlog = async (req: Request, res: Response) => {
   const { title, content } = req.body;
 
   try {
+    const result = await uploader(req.file, res);
     let image;
     if (req.file) {
-      image = req.file.path; // Use the path of the uploaded image file
+      image = req.file.path; 
     } else {
-      // If no file is uploaded, retain the existing image
       const blog = await BlogModel.findById(blogId);
       if (!blog) {
         return res.status(404).json({ message: "Blog not found" });
@@ -80,7 +80,7 @@ export const updateBlog = async (req: Request, res: Response) => {
 
     const updatedBlog = await BlogModel.findByIdAndUpdate(
       blogId,
-      { title, image, content },
+      { title, image : result.secure_url, content },
       { new: true }
     );
     if (!updatedBlog) {
@@ -113,8 +113,6 @@ export const addComment = async (req: Request, res: Response) => {
     const { comment } = req.body;
 
     console.log("Received comment data:", comment);
-
-    // Validate if comment is provided
     if (!comment) {
       return res.status(400).json({ message: "Comment is required for adding a comment" });
     }

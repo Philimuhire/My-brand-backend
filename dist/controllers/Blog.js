@@ -81,10 +81,9 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         let image;
         if (req.file) {
-            image = req.file.path; // Use the path of the uploaded image file
+            image = req.file.path;
         }
         else {
-            // If no file is uploaded, retain the existing image
             const blog = yield BlogModel_1.default.findById(blogId);
             if (!blog) {
                 return res.status(404).json({ message: "Blog not found" });
@@ -123,7 +122,6 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { blogId } = req.params;
         const { comment } = req.body;
         console.log("Received comment data:", comment);
-        // Validate if comment is provided
         if (!comment) {
             return res.status(400).json({ message: "Comment is required for adding a comment" });
         }
