@@ -21,15 +21,16 @@ const ContactQuery_1 = __importDefault(require("./routes/ContactQuery"));
 const BlogModel_1 = __importDefault(require("./models/BlogModel"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_1 = __importDefault(require("./swagger"));
-const path_1 = __importDefault(require("path"));
+const multer_1 = __importDefault(require("./cloudinary/multer"));
 const app = (0, express_1.default)();
 mongoose_1.default.connect("mongodb+srv://Philimuhire:Phili123@philbertapi.ue2svev.mongodb.net/?retryWrites=true&w=majority&appName=PhilbertAPI").then(() => {
     console.log("MongoDB connected");
 }).catch((error) => {
     console.log(error.message);
 });
-app.use(express_1.default.static(path_1.default.join(__dirname, 'uploads/')));
+//app.use(express.static(path.join(__dirname, 'uploads/')))
 app.use(express_1.default.json());
+app.use(multer_1.default.single("image"));
 app.use((0, cors_1.default)());
 app.use("/auth", User_1.default);
 app.use("/blog", Blog_1.default);
