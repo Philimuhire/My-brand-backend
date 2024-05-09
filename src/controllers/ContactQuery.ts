@@ -28,3 +28,17 @@ export const getContactQueryCount = async (req: Request, res: Response) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+  export const deleteContactQueryById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deletedQuery = await ContactQuery.findByIdAndDelete(id);
+      if (deletedQuery) {
+        res.json({ message: "Contact query deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Contact query not found" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };

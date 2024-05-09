@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContactQueryCount = exports.getContactQueries = exports.saveContactQuery = void 0;
+exports.deleteContactQueryById = exports.getContactQueryCount = exports.getContactQueries = exports.saveContactQuery = void 0;
 const ContactQueryModel_1 = __importDefault(require("../models/ContactQueryModel"));
 const saveContactQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -45,3 +45,19 @@ const getContactQueryCount = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getContactQueryCount = getContactQueryCount;
+const deleteContactQueryById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const deletedQuery = yield ContactQueryModel_1.default.findByIdAndDelete(id);
+        if (deletedQuery) {
+            res.json({ message: "Contact query deleted successfully" });
+        }
+        else {
+            res.status(404).json({ message: "Contact query not found" });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+exports.deleteContactQueryById = deleteContactQueryById;
