@@ -72,4 +72,27 @@ router.get("/getContactQueries", ContactQuery_1.getContactQueries);
  *         description: Internal server error.
  */
 router.get("/queryCount", ContactQuery_2.getContactQueryCount);
+/**
+ * Delete a contact query by ID.
+ * @swagger
+ * /contact/deleteContactQuery/{id}:
+ *   delete:
+ *     summary: Delete a contact query by ID.
+ *     description: Delete a contact query with the provided ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the contact query to delete.
+ *     responses:
+ *       '200':
+ *         description: Contact query deleted successfully.
+ *       '404':
+ *         description: Contact query not found.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.delete("/deleteContactQuery/:id", ContactQuery_2.deleteContactQueryById);
 exports.default = router;

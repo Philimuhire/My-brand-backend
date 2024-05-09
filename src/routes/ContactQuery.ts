@@ -1,6 +1,6 @@
 import express from "express";
 import { saveContactQuery, getContactQueries } from "../controllers/ContactQuery";
-import { getContactQueryCount } from "../controllers/ContactQuery";
+import { getContactQueryCount, deleteContactQueryById } from "../controllers/ContactQuery";
 
 const router = express.Router();
 
@@ -72,5 +72,29 @@ router.get("/getContactQueries", getContactQueries);
  *         description: Internal server error.
  */
 router.get("/queryCount", getContactQueryCount);
+
+/**
+ * Delete a contact query by ID.
+ * @swagger
+ * /contact/deleteContactQuery/{id}:
+ *   delete:
+ *     summary: Delete a contact query by ID.
+ *     description: Delete a contact query with the provided ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the contact query to delete.
+ *     responses:
+ *       '200':
+ *         description: Contact query deleted successfully.
+ *       '404':
+ *         description: Contact query not found.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.delete("/deleteContactQuery/:id", deleteContactQueryById);
 
 export default router;
