@@ -8,10 +8,10 @@ import uploader from "../cloudinary/cloudinary";
 
 /*const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname); // Keep the original file name
+    cb(null, file.originalname); 
   }
 });
 

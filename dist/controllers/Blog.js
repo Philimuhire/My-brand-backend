@@ -16,31 +16,29 @@ exports.getLikes = exports.getComments = exports.addLike = exports.addComment = 
 const BlogModel_1 = __importDefault(require("../models/BlogModel"));
 const CommentModel_1 = __importDefault(require("../models/CommentModel"));
 const LikeModel_1 = __importDefault(require("../models/LikeModel"));
-const multer_1 = __importDefault(require("multer"));
-// Multer configuration for file uploads
-const storage = multer_1.default.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname); // Keep the original file name
-    }
+const cloudinary_1 = __importDefault(require("../cloudinary/cloudinary"));
+/*const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
 });
-const upload = (0, multer_1.default)({ storage: storage });
+
+const upload = multer({ storage: storage });*/
 const createBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, content } = req.body;
-        let image;
+        /*let image;
         if (req.file) {
-            image = req.file.path;
-        }
-        else {
-            // Handle case where no file is uploaded
-            throw new Error("No image uploaded");
-        }
+        } else {
+          throw new Error("No image uploaded");
+        }*/
+        const result = yield (0, cloudinary_1.default)(req.file, res);
         const newBlog = yield BlogModel_1.default.create({
             title,
-            image,
+            image: result.secure_url,
             content,
         });
         res.status(201).json({ message: "Blog created successfully", blog: newBlog });
@@ -79,6 +77,7 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { blogId } = req.params;
     const { title, content } = req.body;
     try {
+        const result = yield (0, cloudinary_1.default)(req.file, res);
         let image;
         if (req.file) {
             image = req.file.path;
@@ -90,7 +89,7 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             }
             image = blog.image;
         }
-        const updatedBlog = yield BlogModel_1.default.findByIdAndUpdate(blogId, { title, image, content }, { new: true });
+        const updatedBlog = yield BlogModel_1.default.findByIdAndUpdate(blogId, { title, image: result.secure_url, content }, { new: true });
         if (!updatedBlog) {
             res.status(404).json({ message: "Blog not found" });
             return;

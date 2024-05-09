@@ -30,7 +30,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const multer_1 = __importDefault(require("multer"));
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+        cb(null, "uploads/");
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
@@ -39,7 +39,7 @@ const storage = multer_1.default.diskStorage({
 const upload = (0, multer_1.default)({ storage: storage });
 const BlogSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
-    image: { type: String, required: true }, // Update this to accept file uploads
+    image: { type: String, required: true },
     content: { type: String, required: true },
     comments: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "Comment" }],
     likes: { type: Number, default: 0 },

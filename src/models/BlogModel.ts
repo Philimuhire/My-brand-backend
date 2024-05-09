@@ -12,7 +12,7 @@ interface BlogModel extends Document {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "uploads/"); // Specify the directory where uploaded files should be stored
+        cb(null, "uploads/"); 
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname); 
@@ -23,7 +23,7 @@ const upload = multer({ storage: storage });
 
 const BlogSchema: Schema = new Schema({
     title: { type: String, required: true },
-    image: { type: String, required: true }, // Update this to accept file uploads
+    image: { type: String, required: true }, 
     content: { type: String, required: true },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likes: { type: Number, default: 0 },

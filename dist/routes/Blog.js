@@ -4,18 +4,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const multer_1 = __importDefault(require("multer"));
 const Blog_1 = require("../controllers/Blog");
 const router = express_1.default.Router();
-const storage = multer_1.default.diskStorage({
+/*const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "uploads/");
+      cb(null, "uploads/");
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname);
+      cb(null, file.originalname);
     }
-});
-const upload = (0, multer_1.default)({ storage: storage });
+  });
+
+
+const upload = multer({ storage: storage });*/
 /**
  * @swagger
  * tags:
@@ -51,7 +52,7 @@ const upload = (0, multer_1.default)({ storage: storage });
  *       '500':
  *         description: Internal server error.
  */
-router.post("/createBlog", upload.single("image"), Blog_1.createBlog);
+router.post("/createBlog", Blog_1.createBlog);
 /**
  * Get all blogs.
  * @swagger
@@ -127,7 +128,7 @@ router.get("/getBlogById/:blogId", Blog_1.getBlogById);
  *       '500':
  *         description: Internal server error.
  */
-router.put("/updateBlog/:blogId", upload.single("image"), Blog_1.updateBlog);
+router.put("/updateBlog/:blogId", Blog_1.updateBlog);
 /**
  * Delete a blog.
  * @swagger
