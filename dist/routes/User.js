@@ -70,4 +70,41 @@ router.post("/register", User_1.register);
  *         description: Internal server error.
  */
 router.post("/login", User_1.login);
+/**
+ * Delete a user by email.
+ * @swagger
+ * /auth/delete/{email}:
+ *   delete:
+ *     summary: Delete a user by email.
+ *     description: Delete a user with the provided email.
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Email of the user to delete.
+ *     responses:
+ *       '200':
+ *         description: User deleted successfully.
+ *       '404':
+ *         description: User not found.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.delete("/delete/:email", User_1.deleteUserByEmail);
+/**
+ * Get all users.
+ * @swagger
+ * /auth/allusers:
+ *   get:
+ *     summary: Get all users.
+ *     description: Retrieve all users from the database.
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved all users.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get("/allusers", User_1.getAllUsers);
 exports.default = router;
