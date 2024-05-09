@@ -24,6 +24,7 @@ export const register = async (req: Request, res: Response) => {
     res.json({ message: error.message });
   }
 };
+
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -43,5 +44,28 @@ export const login = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     res.json({ message: error.message });
+  }
+};
+
+export const deleteUserByEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+    const deletedUser = await UserModel.findOneAndDelete({ email });
+    if (deletedUser) {
+      res.json({ message: "User deleted successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await UserModel.find();
+    res.json(users);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
