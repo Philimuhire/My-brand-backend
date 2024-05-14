@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLikes = exports.getComments = exports.addLike = exports.addComment = exports.deleteBlog = exports.updateBlog = exports.getBlogById = exports.getAllBlogs = exports.createBlog = void 0;
+exports.blogsCount = exports.getLikes = exports.getComments = exports.addLike = exports.addComment = exports.deleteBlog = exports.updateBlog = exports.getBlogById = exports.getAllBlogs = exports.createBlog = void 0;
 const BlogModel_1 = __importDefault(require("../models/BlogModel"));
 const CommentModel_1 = __importDefault(require("../models/CommentModel"));
 const LikeModel_1 = __importDefault(require("../models/LikeModel"));
@@ -185,3 +185,13 @@ const getLikes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getLikes = getLikes;
+const blogsCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const count = yield BlogModel_1.default.countDocuments();
+        res.status(200).json({ count });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+exports.blogsCount = blogsCount;

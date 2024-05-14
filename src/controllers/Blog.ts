@@ -183,3 +183,12 @@ export const getLikes = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const blogsCount = async (req: Request, res: Response) => {
+  try {
+    const count = await BlogModel.countDocuments();
+    res.status(200).json({ count });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
