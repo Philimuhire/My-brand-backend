@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, deleteUserByEmail, getAllUsers } from "../controllers/User";
+import { register, login, deleteUserByEmail, getAllUsers, usersCount } from "../controllers/User";
 
 const router = express.Router();
 
@@ -108,5 +108,20 @@ router.delete("/delete/:email", deleteUserByEmail);
  *         description: Internal server error.
  */
 router.get("/allusers", getAllUsers);
+
+/**
+ * Get the user count.
+ * @swagger
+ * /auth/userscount:
+ *   get:
+ *     summary: Get the user count.
+ *     description: Retrieve the count of all users from the database.
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved user count.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get("/userscount", usersCount);
 
 export default router;

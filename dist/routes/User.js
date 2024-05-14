@@ -107,4 +107,18 @@ router.delete("/delete/:email", User_1.deleteUserByEmail);
  *         description: Internal server error.
  */
 router.get("/allusers", User_1.getAllUsers);
+/**
+ * Get the user count.
+ * @swagger
+ * /auth/userscount:
+ *   get:
+ *     summary: Get the user count.
+ *     description: Retrieve the count of all users from the database.
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved user count.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get("/userscount", User_1.usersCount);
 exports.default = router;
