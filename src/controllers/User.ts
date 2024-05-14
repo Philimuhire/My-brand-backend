@@ -69,3 +69,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const usersCount = async (req: Request, res: Response) => {
+  try {
+    const count = await UserModel.countDocuments();
+    res.json({ count });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
