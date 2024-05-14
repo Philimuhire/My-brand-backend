@@ -255,4 +255,18 @@ router.get("/getComments/:blogId", Blog_1.getComments);
  *         description: Internal server error.
  */
 router.get("/getLikes/:blogId", Blog_1.getLikes);
+/**
+ * Get the count of all blogs.
+ * @swagger
+ * /blog/blogsCount:
+ *   get:
+ *     summary: Get the count of all blogs.
+ *     description: Retrieve the count of all blogs stored in the database.
+ *     responses:
+ *       '200':
+ *         description: Count of blogs.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get("/blogsCount", Blog_1.blogsCount);
 exports.default = router;

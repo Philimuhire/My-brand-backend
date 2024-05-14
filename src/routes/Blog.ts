@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer"; 
-import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, addComment, addLike, getComments, getLikes } from "../controllers/Blog";
+import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, addComment, addLike, getComments, getLikes, blogsCount } from "../controllers/Blog";
 
 const router = express.Router();
 
@@ -263,6 +263,21 @@ router.get("/getComments/:blogId", getComments);
  *         description: Internal server error.
  */
 router.get("/getLikes/:blogId", getLikes);
+
+/**
+ * Get the count of all blogs.
+ * @swagger
+ * /blog/blogsCount:
+ *   get:
+ *     summary: Get the count of all blogs.
+ *     description: Retrieve the count of all blogs stored in the database.
+ *     responses:
+ *       '200':
+ *         description: Count of blogs.
+ *       '500':
+ *         description: Internal server error.
+ */
+router.get("/blogsCount", blogsCount);
 
 export default router;
 
